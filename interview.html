@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أسئلة تحضير للانترفيو البرمجي</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>أسئلة تحضير للانترفيو البرمجي</h1>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="بحث عن سؤال...">
+            <select id="category">
+                <option value="">كل الفئات</option>
+                <option value="basic">أساسيات البرمجة</option>
+                <option value="data-structures">البيانات وهياكلها</option>
+                <option value="algorithms">الخوارزميات</option>
+            </select>
+        </div>
+    </header>
+    <main>
+        <section class="faq" id="faq-container">
+            <!-- Example of a few questions; add more as needed -->
+            <div class="question" data-category="basic" onclick="toggleAnswer(this)" oncontextmenu="showOptions(event, this)">
+                <div class="question-content">
+                    <h2>ما هو مفهوم الـ OOP؟</h2>
+                    <p class="answer">البرمجة كائنية التوجه (OOP) هي نمط برمجي يعتمد على تمثيل البيانات ككائنات تجمع بين البيانات والإجراءات.</p>
+                </div>
+                <div class="options-menu" style="display: none;">
+                    <button onclick="editQuestion(event)">تعديل</button>
+                    <button onclick="deleteQuestion(event)">حذف</button>
+                </div>
+            </div>
+            <!-- Add more questions as needed -->
+        </section>
+    </main>
+    <a href="index.html" id="back-to-top" title="رجوع إلى الصفحة الرئيسية">🏠</a>
+    <a href="anotherpage.html" id="navigate-to-other-page" title="انتقال إلى صفحة أخرى">➡️</a>
+    <button id="add-question">إضافة سؤال</button>
+
+    <!-- Modal for adding a question -->
+    <div id="add-question-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>إضافة سؤال جديد</h2>
+            <form id="add-question-form">
+                <label for="new-question">السؤال:</label>
+                <input type="text" id="new-question" required>
+
+                <label for="new-answer">الجواب:</label>
+                <textarea id="new-answer" required></textarea>
+
+                <label for="new-category">الفئة:</label>
+                <select id="new-category" required>
+                    <option value="basic">أساسيات البرمجة</option>
+                    <option value="data-structures">البيانات وهياكلها</option>
+                    <option value="algorithms">الخوارزميات</option>
+                </select>
+
+                <button type="submit">إضافة السؤال</button>
+            </form>
+        </div>
+    </div>
+
+    <script >
+    // Function to toggle answer visibility
+function toggleAnswer(questionElement) {
+    const answer = questionElement.querySelector('.answer');
+    answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+}
+
+// Function to show options menu (edit, delete)
+function showOptions(event, questionElement) {
+    event.preventDefault(); // Prevent the default context menu
+    const optionsMenu = questionElement.querySelector('.options-menu');
+    optionsMenu.style.display = optionsMenu.style.display === 'none' ? 'block' : 'none';
+}
+
+// Function to delete a question
+function deleteQuestion(event) {
+    event.stopPropagation(); // Prevent the click event from triggering the toggleAnswer function
+    const questionElement = event.target.closest('.question');
+    if (questionElement) {
+        questionElement.remove();
+        saveQuestions(); // Save the updated questions list
+    }
+}
+
+// Function to edit a question
+function editQuestion(event) {
+    event.stopPropagation(); // Prevent the click event from triggering the toggleAnswer function
+    const questionElement = event.target.closest('.question');
+    if (questionElement) {
+        const questionText = prompt("تعديل السؤال:", questionElement.querySelector('h2').textContent);
+        const answerText = prompt("تعديل الجواب:", questionElement.querySelector('.answer').textContent);
+
+        if (questionText && answerText) {
+            questionElement.querySelector('h2').textContent = questionText;
+            questionElement.querySelector('.answer').textContent = answerText;
+            saveQuestions(); // Save the updated questions list
+        }
+    }
+}
+
+// Function to filter questions based on search and category
+function filterQuestions() {
+    const searchQuery = document.getElementById('search').value.toLowerCase();
+    const selectedCategory = document.getElementById('category').value;
+    const questions = document.querySelectorAll('.question');
+
+    questions.forEach(question => {
+        const title = question.querySelector('h2').textContent.toLowerCase();
+        const category = question.dataset.category;
+        const isMatch = title.includes(searchQuery) && (!selectedCategory || category === selectedCategory);
+        question.style.display = isMatch ? 'block' : 'none';
+    });
+}
+
+// Add event listeners for search and category filtering
+document.getElementById('search').addEventListener('input', filterQuestions);
+document.getElementById('category').addEventListener('change', filterQuestions);
+
+// Show/hide "Back to Top" button based on scroll position
+window.addEventListener('scroll', function () {
+    const button = document.getElementById('back-to-top');
+    if (window.scrollY > 200) {
+        button.classList.add('show');
+    } else {
+        button.classList.remove('show');
+    }
+});
+
+// Show modal
+const modal = document.getElementById('add-question-modal');
+const addQuestionBtn = document.getElementById('add-question');
+const closeModal = document.querySelector('.modal-content .close');
+const addQuestionForm = document.getElementById('add-question-form');
+
+// Show the modal when clicking the "Add Question" button
+addQuestionBtn.addEventListener('click', function () {
+    modal.style.display = 'flex';
+});
+
+// Close the modal when clicking on <span> (x)
+closeModal.addEventListener('click', function () {
+    modal.style.display = 'none';
+});
+
+// Close the modal when clicking outside the modal content
+window.addEventListener('click', function (event) {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+// Load questions from localStorage
+function loadQuestions() {
+    const questions = JSON.parse(localStorage.getItem('questions')) || [];
+    const faqContainer = document.getElementById('faq-container');
+    faqContainer.innerHTML = ''; // Clear existing questions
+
+    questions.forEach(question => {
+        const newQuestion = document.createElement('div');
+        newQuestion.className = 'question';
+        newQuestion.dataset.category = question.category;
+        newQuestion.onclick = function () {
+            toggleAnswer(this);
+        };
+        newQuestion.oncontextmenu = function (event) {
+            showOptions(event, this);
+        };
+        newQuestion.innerHTML = `
+            <div class="question-content">
+                <h2>${question.question}</h2>
+                <p class="answer">${question.answer}</p>
+            </div>
+            <div class="options-menu" style="display: none;">
+                <button onclick="editQuestion(event)">تعديل</button>
+                <button onclick="deleteQuestion(event)">حذف</button>
+            </div>
+        `;
+        faqContainer.appendChild(newQuestion);
+    });
+}
+
+// Save questions to localStorage
+function saveQuestions() {
+    const questions = [];
+    document.querySelectorAll('.question').forEach(questionElement => {
+        questions.push({
+            question: questionElement.querySelector('h2').textContent,
+            answer: questionElement.querySelector('.answer').textContent,
+            category: questionElement.dataset.category
+        });
+    });
+    localStorage.setItem('questions', JSON.stringify(questions));
+}
+
+// Add new question and answer
+addQuestionForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    
+    const questionText = document.getElementById('new-question').value;
+    const answerText = document.getElementById('new-answer').value;
+    const category = document.getElementById('new-category').value;
+
+    if (questionText && answerText && category) {
+        const faqContainer = document.getElementById('faq-container');
+        const newQuestion = document.createElement('div');
+        newQuestion.className = 'question';
+        newQuestion.dataset.category = category;
+        newQuestion.onclick = function () {
+            toggleAnswer(this);
+        };
+        newQuestion.oncontextmenu = function (event) {
+            showOptions(event, this);
+        };
+        newQuestion.innerHTML = `
+            <div class="question-content">
+                <h2>${questionText}</h2>
+                <p class="answer">${answerText}</p>
+            </div>
+            <div class="options-menu" style="display: none;">
+                <button onclick="editQuestion(event)">تعديل</button>
+                <button onclick="deleteQuestion(event)">حذف</button>
+            </div>
+        `;
+        faqContainer.appendChild(newQuestion);
+        
+        // Save the new question list
+        saveQuestions();
+        
+        // Close the modal
+        modal.style.display = 'none';
+        
+        // Clear form fields
+        addQuestionForm.reset();
+    }
+});
+
+// Load questions when the page is loaded
+window.addEventListener('DOMContentLoaded', loadQuestions);
+
+
+    </script>
+</body>
+</html>

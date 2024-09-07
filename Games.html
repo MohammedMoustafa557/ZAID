@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAID-Challenge</title>
+    <link rel="stylesheet" href="static/css/Games.css">
+    <style>
+        /* CSS مدمج للتوضيح، يمكنك إضافته إلى ملف CSS الخاص بك */
+        .sc1 {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; يضع الصورة في الأسفل
+            height: 100vh; /* يجعل عنصر الحاوية يغطي ارتفاع الشاشة بالكامل */
+        }
+
+        .sc1 img {
+            max-width: 100%; /* يجعل الصورة تستجيب للحجم المتاح */
+            height: auto; /* يحافظ على نسبة أبعاد الصورة */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <h1 class="level-title">Level 1: Basic HTML Box</h1>
+        <p class="challenge">Challenge: Create a black box using HTML and CSS.</p>
+        <textarea id="code" placeholder="Write your code here..." oninput="updatePreview()"></textarea>
+        <div id="output"></div>
+        <button onclick="nextLevel()">Next Level</button>
+        <button class="solution-btn" onclick="showSolution()">Show Solution</button>
+        <button class="hint-btn" onclick="showHint()">Show Hint</button>
+        <div id="error-message" class="hidden">
+            <p></p>
+        </div>
+        <div id="win-message" class="hidden">
+            <p>You won! Moving to the next level...</p>
+        </div>
+        <div id="timer" class="hidden">
+            Time left: <span id="timer-value">90</span> seconds
+        </div>
+        <audio id="win-sound" src="win-sound.mp3" preload="auto"></audio>
+    </div>
+
+    <section>
+        <div class="sc1">
+            <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*gReLR6hZjwyBxHmfLN1AVw.gif" alt="Centered Image">
+        </div>
+    </section>
+
+    <script src="static/js/Games.js"></script>
+</body>
+</html>

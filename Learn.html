@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn with Zaid in games</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f3f4f6, #e2e8f0);
+            color: #333;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #4a90e2;
+            color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5em;
+            margin: 0;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #fff;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        .sidebar ul li a:hover, .sidebar ul li a.active {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .sidebar-buttons {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background-color: #4a90e2;
+            color: #fff;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+        }
+
+        .circle-btn:hover {
+            background-color: #357abd;
+        }
+
+        .circle-btn:active {
+            background-color: #2a5d9d;
+        }
+
+        .container {
+            flex: 1;
+            margin: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+
+        #stageTitle {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        #stageInstructions {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #4a90e2;
+            color: #fff;
+            transition: all 0.3s ease;
+            margin: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background-color: #357abd;
+        }
+
+        .btn:active {
+            background-color: #2a5d9d;
+        }
+
+        .hint {
+            padding: 10px;
+            background-color: #fff3e0;
+            color: #ff9800;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #htmlCode {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+
+        #preview {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .stage-container {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Stages</h2>
+        <ul id="stageList">
+            <!-- List of stages will be dynamically generated here -->
+        </ul>
+        <div class="sidebar-buttons">
+            <button id="homeButton" class="circle-btn">Home</button>
+            <!-- Add more buttons here if needed -->
+        </div>
+    </div>
+    <div class="container">
+        <h1>HTML & CSS Learning Game</h1>
+        <div id="stage" class="stage-container">
+            <h2 id="stageTitle">Stage 1: Create a Heading</h2>
+            <p id="stageInstructions">Add an &lt;h1&gt; tag to create a heading on your page.</p>
+            <button id="hintButton" class="btn">Show Hint</button>
+            <div id="hint" class="hint hidden"></div>
+            <textarea id="htmlCode">&lt;!-- Your code here --&gt;</textarea>
+            <iframe id="preview"></iframe>
+            <button id="prevButton" class="btn">Previous Stage</button>
+            <button id="nextButton" class="btn">Next Stage</button>
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            { title: "Stage 1: Create a Heading", instructions: "Add an &lt;h1&gt; tag to create a heading on your page.", hint: "Use the &lt;h1&gt; tag for the main heading of your page.", checkCode: code => code.includes('<h1>') && code.includes('</h1>') },
+            { title: "Stage 2: Add a Paragraph", instructions: "Add a &lt;p&gt; tag to create a paragraph on your page.", hint: "Use the &lt;p&gt; tag for a block of text.", checkCode: code => code.includes('<p>') && code.includes('</p>') },
+            { title: "Stage 3: Insert an Image", instructions: "Add an &lt;img&gt; tag to insert an image. Use a placeholder image URL.", hint: "Include the src attribute in the &lt;img&gt; tag to specify the image source.", checkCode: code => code.includes('<img src="') && code.includes('" />') },
+            { title: "Stage 4: Add a Link", instructions: "Add an &lt;a&gt; tag to create a link to another website.", hint: "Use the href attribute in the &lt;a&gt; tag to specify the link's destination.", checkCode: code => code.includes('<a href="') && code.includes('">') && code.includes('</a>') },
+            { title: "Stage 5: Create a List", instructions: "Add a &lt;ul&gt; tag to create an unordered list and an &lt;ol&gt; tag to create an ordered list.", hint: "Use the &lt;li&gt; tag for list items within &lt;ul&gt; or &lt;ol&gt;.", checkCode: code => { const hasUl = code.includes('<ul>') && code.includes('</ul>') && code.includes('<li>') && code.includes('</li>'); const hasOl = code.includes('<ol>') && code.includes('</ol>') && code.includes('<li>') && code.includes('</li>'); return hasUl && hasOl; }},
+            { title: "Stage 6: Create a Table", instructions: "Add a &lt;table&gt; tag to create a table. Include &lt;tr&gt; for rows and &lt;td&gt; for cells.", hint: "Use the &lt;table&gt; tag for the table, &lt;tr&gt; for rows, and &lt;td&gt; for cells.", checkCode: code => code.includes('<table>') && code.includes('</table>') && code.includes('<tr>') && code.includes('</tr>') && code.includes('<td>') && code.includes('</td>') },
+            { title: "Stage 7: Basic CSS Styling", instructions: "Add CSS to change the color of headings and paragraphs.", hint: "Use the color property in CSS to change the text color.", checkCode: code => code.includes('h1 { color:') && code.includes('p { color:') },
+            { title: "Stage 8: Text Formatting", instructions: "Change the font size and style of headings and paragraphs.", hint: "Use font-size and font-family to change text size and style.", checkCode: code => code.includes('h1 { font-size:') && code.includes('p { font-family:') },
+            { title: "Stage 9: Backgrounds", instructions: "Add a background color or image to the page.", hint: "Use background-color or background-image in CSS.", checkCode: code => code.includes('body { background-color:') || code.includes('body { background-image:') },
+            { title: "Stage 10: Margins and Padding", instructions: "Adjust margins and padding for elements.", hint: "Use margin and padding properties in CSS.", checkCode: code => code.includes('h1 { margin:') && code.includes('p { padding:') },
+            { title: "Stage 11: Layout", instructions: "Arrange elements on the page using CSS layout techniques.", hint: "Use properties like display and position.", checkCode: code => code.includes('h1 { display:') || code.includes('p { position:') },
+            { title: "Stage 12: Effects", instructions: "Add effects like shadows or borders to elements.", hint: "Use box-shadow for shadows and border for borders.", checkCode: code => code.includes('h1 { box-shadow:') || code.includes('p { border:') },
+            { title: "Stage 13: Responsive Design", instructions: "Make your webpage responsive using media queries.", hint: "Use @media queries to adjust styles for different screen sizes.", checkCode: code => code.includes('@media') && code.includes('max-width') },
+            { title: "Stage 14: Flexbox Layout", instructions: "Use Flexbox to create a flexible layout.", hint: "Apply display: flex; to a container to use Flexbox.", checkCode: code => code.includes('display: flex;') },
+            { title: "Stage 15: Grid Layout", instructions: "Use CSS Grid to create a grid layout.", hint: "Apply display: grid; to a container to use Grid layout.", checkCode: code => code.includes('display: grid;') },
+            { title: "Final Project: Build a Complete Page", instructions: "Combine everything you've learned to create a complete webpage.", hint: "Include headings, paragraphs, images, links, lists, tables, and styles in your final page.", checkCode: code => { return stages.slice(0, -1).every(stage => stage.checkCode(code)); } },
+            { title: "Stage 16: CSS Selectors", instructions: "Use CSS selectors to style elements. Apply different styles to `h1`, `p`, and `ul` elements.", hint: "Use selectors like `h1 {}`, `p {}`, and `ul {}` in your CSS.", checkCode: code => code.includes('h1 {') && code.includes('p {') && code.includes('ul {') },
+            { title: "Stage 17: CSS Pseudo-Classes", instructions: "Use CSS pseudo-classes to style `a` elements on hover and focus.", hint: "Use `:hover` and `:focus` pseudo-classes.", checkCode: code => code.includes('a:hover {') && code.includes('a:focus {') },
+            { title: "Stage 18: CSS Flexbox Alignment", instructions: "Use Flexbox to center elements both horizontally and vertically.", hint: "Use `justify-content` and `align-items` properties with `display: flex;`.", checkCode: code => code.includes('display: flex;') && code.includes('justify-content: center;') && code.includes('align-items: center;') },
+            { title: "Stage 19: CSS Grid Layout", instructions: "Use CSS Grid to create a layout with two columns.", hint: "Use `display: grid;` and `grid-template-columns`.", checkCode: code => code.includes('display: grid;') && code.includes('grid-template-columns: 1fr 1fr;') },
+            { title: "Stage 20: Responsive Design with Media Queries", instructions: "Create a responsive design using media queries to adjust the layout for smaller screens.", hint: "Use `@media` to apply styles based on screen width.", checkCode: code => code.includes('@media (max-width: 600px)') && code.includes('font-size: 14px;') },
+            { title: "Stage 21: Advanced CSS Properties", instructions: "Use advanced CSS properties such as gradients, transitions, and animations.", hint: "Apply `background: linear-gradient;`, `transition`, and `@keyframes` for animations.", checkCode: code => code.includes('background: linear-gradient;') || code.includes('transition: background-color 0.3s ease;') || code.includes('@keyframes') },
+            { title: "Stage 22: CSS Variables", instructions: "Use CSS variables to manage colors and font sizes.", hint: "Define variables with `--variable-name` and use `var(--variable-name)`.", checkCode: code => code.includes(':root {') && code.includes('--main-color:') && code.includes('color: var(--main-color);') },
+            { title: "Stage 23: HTML Forms", instructions: "Create a form with text input, radio buttons, checkboxes, and a submit button.", hint: "Use `<form>`, `<input>`, `<radio>`, and `<checkbox>` elements.", checkCode: code => code.includes('<form>') && code.includes('<input type="text"') && code.includes('<input type="radio"') && code.includes('<input type="checkbox"') },
+            { title: "Stage 24: HTML Semantics", instructions: "Use semantic HTML tags such as `<header>`, `<footer>`, `<article>`, and `<section>`.", hint: "Structure your HTML document with meaningful tags.", checkCode: code => code.includes('<header>') && code.includes('<footer>') && code.includes('<article>') && code.includes('<section>') },
+            { title: "Stage 25: HTML Accessibility", instructions: "Ensure your HTML is accessible by adding appropriate `alt` attributes and using ARIA roles.", hint: "Use `alt` for images and ARIA roles for interactive elements.", checkCode: code => code.includes('alt="Description of image"') && code.includes('aria-label="Close"') }
+        ];
+
+        let currentStage = 0;
+
+        function updatePreview() {
+            const htmlCode = document.getElementById('htmlCode').value;
+            const iframe = document.getElementById('preview');
+            
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(htmlCode);
+            iframe.contentDocument.close();
+        }
+
+        function updateStage() {
+            const stage = stages[currentStage];
+            document.getElementById('stageTitle').innerHTML = stage.title;
+            document.getElementById('stageInstructions').innerHTML = stage.instructions;
+            document.getElementById('hint').innerHTML = stage.hint;
+            document.getElementById('hint').classList.add('hidden'); // Hide hint initially
+            document.getElementById('htmlCode').value = '';
+            updatePreview();
+            updateSidebar();
+        }
+
+        function updateSidebar() {
+            const stageList = document.getElementById('stageList');
+            stageList.innerHTML = '';
+            stages.forEach((stage, index) => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#';
+                a.textContent = stage.title;
+                a.classList.toggle('active', index === currentStage);
+                a.addEventListener('click', () => {
+                    currentStage = index;
+                    updateStage();
+                });
+                li.appendChild(a);
+                stageList.appendChild(li);
+            });
+        }
+
+        function prevStage() {
+            if (currentStage > 0) {
+                currentStage--;
+                updateStage();
+            }
+        }
+
+        function nextStage() {
+            const stage = stages[currentStage];
+            const htmlCode = document.getElementById('htmlCode').value;
+            if (stage.checkCode(htmlCode)) {
+                if (currentStage < stages.length - 1) {
+                    currentStage++;
+                    updateStage();
+                } else {
+                    alert("Congratulations! You've completed all stages!");
+                }
+            } else {
+                alert("Please complete the task before moving to the next stage.");
+            }
+        }
+
+        function goHome() {
+            // Implement the logic to go back to the home page or reset the game
+            alert("Going back to the home page!");
+            // For example, you might redirect to another URL
+            // window.location.href = 'home.html';
+        }
+
+        document.getElementById('hintButton').addEventListener('click', () => {
+            const hintElement = document.getElementById('hint');
+            if (hintElement.classList.contains('hidden')) {
+                hintElement.classList.remove('hidden');
+            } else {
+                hintElement.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('prevButton').addEventListener('click', prevStage);
+        document.getElementById('nextButton').addEventListener('click', nextStage);
+
+        // Initialize the game
+        updateStage();
+    </script>
+</body>
+</html>
